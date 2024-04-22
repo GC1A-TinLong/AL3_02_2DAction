@@ -17,6 +17,9 @@ public:
 	/// <param name="textureHandle"></param>
 	/// <param name="viewProjection"></param>
 	void Initialize(Model*model,uint32_t textureHandle,ViewProjection *viewProjection);
+	/// <summary>
+	/// 更新処理
+	/// </summary>
 	void Update();
 	void Draw();
 
