@@ -6,7 +6,6 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
-	delete sprite_;
 	delete player_;
 }
 
