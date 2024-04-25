@@ -7,6 +7,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include <vector>
+#include "Function.h"
 
 /// <summary>
 /// ゲームシーン
@@ -51,6 +53,9 @@ private: // メンバ変数
 
 	//Player
 	Player* player_ = nullptr;
+
+	Model* modelBlock_ = nullptr;
+	std::vector<WorldTransform*> worldTransformBlocks_;
 
 	/// <summary>
 	/// ゲームシーン用

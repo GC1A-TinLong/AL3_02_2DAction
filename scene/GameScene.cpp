@@ -7,6 +7,12 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete player_;
+	delete modelBlock_;
+
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		delete worldTransformBlock;
+	}
+	worldTransformBlocks_.clear();
 }
 
 void GameScene::Initialize() {
@@ -21,10 +27,27 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	player_ = new Player();
-	player_->Initialize(model_,textureHandle_,&viewProjection_);
+	player_->Initialize(model_, textureHandle_, &viewProjection_);
+
+	modelBlock_ = Model::Create();
+	const uint32_t kNumBlockHorizontal = 20;           // 要素数
+	const float kBlockWidth = 2.0f;                    // ブロック1個分の横幅
+	worldTransformBlocks_.resize(kNumBlockHorizontal); // 要素数を決める
+	// ブロック生成
+	for (uint32_t i = 0; i < kNumBlockHorizontal; i++) {
+		worldTransformBlocks_[i] = new WorldTransform();
+		worldTransformBlocks_[i]->Initialize();
+		worldTransformBlocks_[i]->translation_.x = kBlockWidth * i;
+		worldTransformBlocks_[i]->translation_.y = 0.0f;
+	}
 }
 
-void GameScene::Update() { player_->Update(); }
+void GameScene::Update() {
+	player_->Update();
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+	}
+}
 
 void GameScene::Draw() {
 
@@ -52,7 +75,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	player_->Draw();
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
