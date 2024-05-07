@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include "ViewProjection.h"
 
 static const int kRowHeight = 20;
 static const int kColumnWidth = 60;
@@ -31,4 +32,6 @@ Matrix4x4 MakeRotateZMatrix(const float& radian);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+Matrix4x4 MakeViewMatrix(const ViewProjection& viewProjection);
+Matrix4x4 MakeProjectionMatrix(const ViewProjection& viewProjection);
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
