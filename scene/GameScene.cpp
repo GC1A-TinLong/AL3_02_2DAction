@@ -50,8 +50,7 @@ void GameScene::Initialize() {
 	}
 	// ブロック生成
 	for (uint32_t y = 0; y < kNumBlockVertical; y++) {
-		for (uint32_t x = 0; x < kNumBlockHorizontal; x++) 
-		{
+		for (uint32_t x = 0; x < kNumBlockHorizontal; x++) {
 			if (y % 2 == 0 && x % 2 == 0) {
 				worldTransformBlocks_[y][x] = new WorldTransform();
 				worldTransformBlocks_[y][x]->Initialize();
@@ -78,8 +77,14 @@ void GameScene::Update() {
 		}
 	}
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		isDebugCameraActive_ = true;
+	if (isDebugCameraActive_ == false) {
+		if (input_->TriggerKey(DIK_SPACE)) {
+			isDebugCameraActive_ = true;
+		}
+	} else if (isDebugCameraActive_ == true) {
+		if (input_->TriggerKey(DIK_SPACE)) {
+			isDebugCameraActive_ = false;
+		}
 	}
 #endif // _DEBUG
 	if (isDebugCameraActive_) {
