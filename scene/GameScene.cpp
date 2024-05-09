@@ -32,7 +32,9 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
+#ifdef _DEBUG
 	debugCamera_ = new DebugCamera(kWindowWidth, kWindowHeight);
+#endif _DEBUG
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
@@ -48,7 +50,8 @@ void GameScene::Initialize() {
 	}
 	// ブロック生成
 	for (uint32_t y = 0; y < kNumBlockVertical; y++) {
-		for (uint32_t x = 0; x < kNumBlockHorizontal; x++) {
+		for (uint32_t x = 0; x < kNumBlockHorizontal; x++) 
+		{
 			if (y % 2 == 0 && x % 2 == 0) {
 				worldTransformBlocks_[y][x] = new WorldTransform();
 				worldTransformBlocks_[y][x]->Initialize();
@@ -65,7 +68,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	player_->Update();
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock) {
@@ -122,7 +124,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlock) {
 				continue;
 			}
-			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+			modelBlock_->Draw(*worldTransformBlock, debugCamera_->GetViewProjection());
 		}
 	}
 
