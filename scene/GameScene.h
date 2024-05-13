@@ -1,12 +1,19 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Function.h"
 #include "Input.h"
 #include "Model.h"
+#include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include <vector>
+
+const int kWindowWidth = 1280;
+const int kWindowHeight = 720;
 
 /// <summary>
 /// ゲームシーン
@@ -43,6 +50,22 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+
+	uint32_t textureHandle_ = 0;
+	Model* model_ = nullptr;
+	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
+
+#ifdef _DEBUG
+	// Debug Camera
+	DebugCamera* debugCamera_ = nullptr;
+	bool isDebugCameraActive_ = false;
+#endif // DEBUG
+	Model* modelBlock_ = nullptr;
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+
+	Skydome* skydome_ = nullptr;
+	Model* modelSkydome_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
