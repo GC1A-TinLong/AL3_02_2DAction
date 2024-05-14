@@ -117,8 +117,8 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	skydome_->Draw();
-	//modelSkydome_->Draw(,debugCamera_->GetViewProjection());
+	//skydome_->Draw();
+	modelSkydome_->Draw(worldTransform_, debugCamera_->GetViewProjection());
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
