@@ -11,6 +11,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
+#include "Player.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -51,21 +52,23 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	uint32_t textureHandle_ = 0;
-	Model* model_ = nullptr;
+	uint32_t playerTexture_ = 0;
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
 #ifdef _DEBUG
 	// Debug Camera
 	DebugCamera* debugCamera_ = nullptr;
-	bool isDebugCameraActive_ = false;
+	bool isDebugCameraActive_ = true;
 #endif // DEBUG
 	Model* modelBlock_ = nullptr;
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
 	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+
+	Player* player_ = nullptr;
+	Model* modelPlayer_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

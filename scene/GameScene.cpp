@@ -7,8 +7,9 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete skydome_;
 	delete modelSkydome_;
-	delete model_;
+	delete modelPlayer_;
 	delete modelBlock_;
+	delete player_;
 
 #ifdef _DEBUG
 	delete debugCamera_;
@@ -27,7 +28,6 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	model_ = Model::Create();
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
@@ -60,10 +60,16 @@ void GameScene::Initialize() {
 			}
 		}
 	}
-
+	// Skydome
 	skydome_ = new Skydome;
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
-	skydome_->Initialize(modelSkydome_,&viewProjection_);
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
+	// Player
+	player_ = new Player();
+	modelPlayer_ = Model::Create();
+	playerTexture_ = TextureManager::Load("sample.png");
+	player_->Initialize(modelPlayer_, playerTexture_, &viewProjection_);
+	player_->SetTranslation(2.0f);
 }
 
 void GameScene::Update() {
@@ -78,6 +84,9 @@ void GameScene::Update() {
 			worldTransformBlock->TransferMatrix();
 		}
 	}
+
+	player_->Update();
+
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive_ ^= true;
@@ -117,8 +126,11 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	//skydome_->Draw();
+	// skydome_->Draw();
 	modelSkydome_->Draw(worldTransform_, debugCamera_->GetViewProjection());
+
+	//player_->Draw();
+	 modelPlayer_->Draw(worldTransform_, debugCamera_->GetViewProjection(), playerTexture_);
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
