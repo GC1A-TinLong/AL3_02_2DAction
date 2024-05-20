@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Audio.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
@@ -12,6 +11,7 @@
 #include "WorldTransform.h"
 #include <vector>
 #include "Player.h"
+#include "MapChipField.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -47,6 +47,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void GenerateBlocks();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -61,6 +63,9 @@ private: // メンバ変数
 	DebugCamera* debugCamera_ = nullptr;
 	bool isDebugCameraActive_ = true;
 #endif // DEBUG
+
+	MapChipField* mapChipField_;
+
 	Model* modelBlock_ = nullptr;
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
@@ -69,8 +74,4 @@ private: // メンバ変数
 
 	Player* player_ = nullptr;
 	Model* modelPlayer_ = nullptr;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
 };

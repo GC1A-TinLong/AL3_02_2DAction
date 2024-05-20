@@ -5,6 +5,7 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
+	delete mapChipField_;
 	delete skydome_;
 	delete modelSkydome_;
 	delete modelPlayer_;
@@ -35,31 +36,20 @@ void GameScene::Initialize()
 	debugCamera_ = new DebugCamera(kWindowWidth, kWindowHeight);
 #endif _DEBUG
 
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipVsc("Resources/blocks.csv");
+
 	modelBlock_ = Model::Create();
-	const uint32_t kNumBlockVertical = 10;           // 縦要素数
-	const uint32_t kNumBlockHorizontal = 20;         // 横要素数
-	const float kBlockWidth = 2.0f;                  // ブロック1個分の横幅
-	const float kBlockHeight = 2.0f;                 // 縦幅
-	worldTransformBlocks_.resize(kNumBlockVertical); // 要素数を決める
-	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	}
-	// ブロック生成
-	for (uint32_t y = 0; y < kNumBlockVertical; y++) {
-		for (uint32_t x = 0; x < kNumBlockHorizontal; x++) {
-			if (y % 2 == 0 && x % 2 == 0) {
-				worldTransformBlocks_[y][x] = new WorldTransform();
-				worldTransformBlocks_[y][x]->Initialize();
-				worldTransformBlocks_[y][x]->translation_.x = kBlockWidth * x;
-				worldTransformBlocks_[y][x]->translation_.y = kBlockHeight * y;
-			} else if (y % 2 != 0 && x % 2 != 0) {
-				worldTransformBlocks_[y][x] = new WorldTransform();
-				worldTransformBlocks_[y][x]->Initialize();
-				worldTransformBlocks_[y][x]->translation_.x = kBlockWidth * x;
-				worldTransformBlocks_[y][x]->translation_.y = kBlockHeight * y;
-			}
-		}
-	}
+	//const uint32_t kNumBlockVertical = 10;           // 縦要素数
+	//const uint32_t kNumBlockHorizontal = 20;         // 横要素数
+	//const float kBlockWidth = 2.0f;                  // ブロック1個分の横幅
+	//const float kBlockHeight = 2.0f;                 // 縦幅
+	//worldTransformBlocks_.resize(kNumBlockVertical); // 要素数を決める
+	//for (uint32_t i = 0; i < kNumBlockVertical; i++) {
+	//	worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	//}
+	// Block
+	GenerateBlocks();
 	// Skydome
 	skydome_ = new Skydome;
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -161,4 +151,25 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::GenerateBlocks() {
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+
+	worldTransformBlocks_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+	// Generate blocks
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		for (uint32_t j = 0; j < numBlockHorizontal; j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
 }
