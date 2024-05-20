@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-static inline const float kBlockWidth = 2.0f;
+static inline const float kBlockHeight = 2.0f;
 static inline const float kBlockWidth = 2.0f;
 
 static inline const uint32_t kNumBlockVertical = 20;

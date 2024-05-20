@@ -2,8 +2,6 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
-#include "Model.h"
-#include "ViewProjection.h"
 #include <assert.h>
 
 class Skydome {
