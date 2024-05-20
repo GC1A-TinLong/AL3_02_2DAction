@@ -40,14 +40,6 @@ void GameScene::Initialize()
 	mapChipField_->LoadMapChipVsc("Resources/blocks.csv");
 
 	modelBlock_ = Model::Create();
-	//const uint32_t kNumBlockVertical = 10;           // 縦要素数
-	//const uint32_t kNumBlockHorizontal = 20;         // 横要素数
-	//const float kBlockWidth = 2.0f;                  // ブロック1個分の横幅
-	//const float kBlockHeight = 2.0f;                 // 縦幅
-	//worldTransformBlocks_.resize(kNumBlockVertical); // 要素数を決める
-	//for (uint32_t i = 0; i < kNumBlockVertical; i++) {
-	//	worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	//}
 	// Block
 	GenerateBlocks();
 	// Skydome
@@ -84,10 +76,9 @@ void GameScene::Update() {
 #endif // _DEBUG
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
-		Matrix4x4 cameraViewMatrix = MakeViewMatrix(debugCamera_->GetViewProjection());
-		viewProjection_.matView = cameraViewMatrix;
-		Matrix4x4 cameraProjectionMatrix = MakeProjectionMatrix(debugCamera_->GetViewProjection());
-		viewProjection_.matProjection = cameraProjectionMatrix;
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
@@ -116,18 +107,16 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	// skydome_->Draw();
-	modelSkydome_->Draw(worldTransform_, debugCamera_->GetViewProjection());
+	 skydome_->Draw();
 
-	//player_->Draw();
-	 modelPlayer_->Draw(worldTransform_, debugCamera_->GetViewProjection(), playerTexture_);
+	player_->Draw();
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock) {
 				continue;
 			}
-			modelBlock_->Draw(*worldTransformBlock, debugCamera_->GetViewProjection());
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
 
