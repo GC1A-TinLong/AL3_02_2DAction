@@ -94,10 +94,9 @@ void GameScene::Update() {
 #endif // _DEBUG
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
-		//Matrix4x4 cameraViewMatrix = MakeViewMatrix(debugCamera_->GetViewProjection());
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		//Matrix4x4 cameraProjectionMatrix = MakeProjectionMatrix(debugCamera_->GetViewProjection());
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
@@ -127,10 +126,8 @@ void GameScene::Draw() {
 	Model::PreDraw(commandList);
 
 	 skydome_->Draw();
-	//modelSkydome_->Draw(worldTransform_, debugCamera_->GetViewProjection());
 
 	player_->Draw();
-	 //modelPlayer_->Draw(worldTransform_, debugCamera_->GetViewProjection(), playerTexture_);
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -138,7 +135,6 @@ void GameScene::Draw() {
 				continue;
 			}
 			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
-			//modelBlock_->Draw(*worldTransformBlock, debugCamera_->GetViewProjection());
 		}
 	}
 
