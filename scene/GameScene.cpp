@@ -24,8 +24,7 @@ GameScene::~GameScene() {
 	worldTransformBlocks_.clear();
 }
 
-void GameScene::Initialize() 
-{
+void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -50,8 +49,8 @@ void GameScene::Initialize()
 	player_ = new Player();
 	modelPlayer_ = Model::Create();
 	playerTexture_ = TextureManager::Load("sample.png");
-	player_->Initialize(modelPlayer_, playerTexture_, &viewProjection_);
-	player_->SetTranslation(2.0f);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	player_->Initialize(modelPlayer_, &viewProjection_, playerTexture_, playerPosition);
 }
 
 void GameScene::Update() {
@@ -107,7 +106,7 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
-	 skydome_->Draw();
+	skydome_->Draw();
 
 	player_->Draw();
 
@@ -119,6 +118,7 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
+
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

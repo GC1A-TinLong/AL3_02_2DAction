@@ -61,7 +61,7 @@ private: // メンバ変数
 #ifdef _DEBUG
 	// Debug Camera
 	DebugCamera* debugCamera_ = nullptr;
-	bool isDebugCameraActive_ = true;
+	bool isDebugCameraActive_ = false;
 #endif // DEBUG
 
 	MapChipField* mapChipField_;
