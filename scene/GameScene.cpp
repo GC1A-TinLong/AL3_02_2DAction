@@ -47,10 +47,10 @@ void GameScene::Initialize() {
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 	// Player
 	player_ = new Player();
-	modelPlayer_ = Model::Create();
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	playerTexture_ = TextureManager::Load("sample.png");
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
-	player_->Initialize(modelPlayer_, &viewProjection_, playerTexture_, playerPosition);
+	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 }
 
 void GameScene::Update() {
@@ -69,7 +69,7 @@ void GameScene::Update() {
 	player_->Update();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_F)) {
 		isDebugCameraActive_ ^= true;
 	}
 #endif // _DEBUG

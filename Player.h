@@ -1,4 +1,6 @@
 #pragma once
+
+#define NOMINMAX
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -26,15 +28,16 @@ public:
 	/// <param name="model"></param>
 	/// <param name="textureHandle"></param>
 	/// <param name="viewProjection"></param>
-	void Initialize(Model* model, ViewProjection* viewProjection,uint32_t &textureHandle, const Vector3 &position);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3 &position);
 
+	void PlayerMovement();
 	void Update();
 	void Draw();
 
 private:
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;
-	static inline const float kLimitVelocty = 1.0f;
+	static inline const float kMaxVelocity = 0.8f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -44,4 +47,12 @@ private:
 
 	Vector3 velocity_ = {};
 	LRDirection lrDirection_ = LRDirection::kRight;
+	float turnFirstRotationY_ = 0.0f;
+	float turnTimer_ = 0;
+	static inline const float kTimeTurn = 0.3f;
+
+	static inline const float kGravityAcceleration = 0.08f;
+	static inline const float kLimitFallSpeed = 1.2f;
+	static inline const float kJumpAcceleration = 1.2f;
+	bool onGroung_ = true;
 };
