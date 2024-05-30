@@ -11,6 +11,7 @@ GameScene::~GameScene() {
 	delete modelPlayer_;
 	delete modelBlock_;
 	delete player_;
+	delete cameraController_;
 
 #ifdef _DEBUG
 	delete debugCamera_;
@@ -50,7 +51,12 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	playerTexture_ = TextureManager::Load("sample.png");
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
-	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
+	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition, playerMovableArea);
+
+	cameraController_ = new CameraController;
+	cameraController_->Initialize(&viewProjection_, cameraMovableArea);
+	cameraController_->SetTarget(player_);
+	cameraController_->Reset();
 }
 
 void GameScene::Update() {
@@ -67,12 +73,12 @@ void GameScene::Update() {
 	}
 
 	player_->Update();
+	cameraController_->Update();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_F)) {
 		isDebugCameraActive_ ^= true;
 	}
-#endif // _DEBUG
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -81,6 +87,7 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
+#endif // _DEBUG
 }
 
 void GameScene::Draw() {
@@ -118,7 +125,6 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
-
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

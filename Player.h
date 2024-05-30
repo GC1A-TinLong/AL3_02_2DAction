@@ -10,6 +10,7 @@
 #include "cassert"
 #include <numbers>
 #include <algorithm>
+#include "CameraController.h"
 
 enum class LRDirection {
 	kRight,
@@ -28,16 +29,17 @@ public:
 	/// <param name="model"></param>
 	/// <param name="textureHandle"></param>
 	/// <param name="viewProjection"></param>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3 &position);
-
-	void PlayerMovement();
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, Rect movableArea);
 	void Update();
 	void Draw();
+
+	void PlayerMovement();
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
 
 private:
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;
-	static inline const float kMaxVelocity = 0.8f;
+	static inline const float kMaxVelocity = 10.8f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -46,6 +48,7 @@ private:
 	ViewProjection* viewProjection_ = nullptr;
 
 	Vector3 velocity_ = {};
+	Rect movableArea_ = {};
 	LRDirection lrDirection_ = LRDirection::kRight;
 	float turnFirstRotationY_ = 0.0f;
 	float turnTimer_ = 0;

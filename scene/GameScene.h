@@ -12,6 +12,7 @@
 #include <vector>
 #include "Player.h"
 #include "MapChipField.h"
+#include "CameraController.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -73,5 +74,9 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 
 	Player* player_ = nullptr;
+	Rect playerMovableArea = {2.0f, 195.5f, 2.0f, 100.0f};
 	Model* modelPlayer_ = nullptr;
+
+	CameraController* cameraController_ = nullptr;
+	Rect cameraMovableArea = {27.8f, 172.0f, 15.2f, 100.0f};
 };

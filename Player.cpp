@@ -4,11 +4,12 @@ Player::Player() {}
 
 Player::~Player() {}
 
-void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
+void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, Rect movableArea) {
 	assert(model);
 	model_ = model;
 	// textureHandle_ = textureHandle;
 	viewProjection_ = viewProjection;
+	movableArea_ = movableArea;
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
@@ -84,6 +85,8 @@ void Player::PlayerMovement() {
 
 void Player::Update() {
 	PlayerMovement();
+	worldTransform_.translation_.x = std::clamp(worldTransform_.translation_.x, movableArea_.left, movableArea_.right);
+	worldTransform_.translation_.y = std::clamp(worldTransform_.translation_.y, movableArea_.bottom, movableArea_.top);
 
 	if (turnTimer_ > 0.0f) {
 		turnTimer_ -= 1.0f / 60.0f;
