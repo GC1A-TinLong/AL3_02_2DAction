@@ -40,7 +40,7 @@ public:
 private:
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;
-	static inline const float kMaxVelocity = 10.8f;
+	static inline const float kMaxVelocity = 1.8f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
