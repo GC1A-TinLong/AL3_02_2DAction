@@ -52,6 +52,7 @@ void GameScene::Initialize() {
 	playerTexture_ = TextureManager::Load("sample.png");
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition, playerMovableArea);
+	player_->SetMapChipField(mapChipField_);
 
 	cameraController_ = new CameraController;
 	cameraController_->Initialize(&viewProjection_, cameraMovableArea);

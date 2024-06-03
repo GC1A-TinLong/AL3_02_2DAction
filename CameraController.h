@@ -26,7 +26,7 @@ public:
 private:
 	static inline const float kInterpolationRate = 1.0f;
 	static inline const float kVelocityBias = 2.7f;
-	static inline const Rect margin = {-4.0f, 4.0f, -4.0f, 4.0f};
+	static inline const Rect margin = {-14.0f, 14.0f, -14.0f, 14.0f};
 
 	ViewProjection *viewProjection_ = nullptr;
 	WorldTransform worldTransform_;
