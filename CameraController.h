@@ -24,6 +24,10 @@ public:
 	void Reset();
 
 private:
+	static inline const float kInterpolationRate = 1.0f;
+	static inline const float kVelocityBias = 2.7f;
+	static inline const Rect margin = {-4.0f, 4.0f, -4.0f, 4.0f};
+
 	ViewProjection *viewProjection_ = nullptr;
 	WorldTransform worldTransform_;
 
@@ -31,5 +35,5 @@ private:
 	Vector3 targetOffset_ = {0, 0, -40.0f};
 	Rect movableArea_ = {0, 100.0f, 0, 100.0f};
 
-	Vector3 targetPosition = {};
+	Vector3 targetPosition_ = {};
 };

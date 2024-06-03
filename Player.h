@@ -35,6 +35,7 @@ public:
 
 	void PlayerMovement();
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const Vector3& GetVelocity() const { return velocity_; };
 
 private:
 	static inline const float kAcceleration = 0.05f;

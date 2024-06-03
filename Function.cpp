@@ -24,6 +24,14 @@ Vector3 operator*(float scalar, const Vector3& v) {
 	return result;
 }
 
+Vector3 operator*(const Vector3& v, float scalar) { 
+	Vector3 result{};
+	result.x = scalar * v.x;
+	result.y = scalar * v.y;
+	result.z = scalar * v.z;
+	return result;
+}
+
 float Dot(Vector3& v1, Vector3& v2) { return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z); }
 
 float Length(const Vector3& v) { return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z); }

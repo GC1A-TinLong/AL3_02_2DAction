@@ -11,6 +11,7 @@ static const int kColumnWidth = 60;
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
 Vector3 operator-(const Vector3& v1, const Vector3& v2);
 Vector3 operator*(float scalar, const Vector3& v);
+Vector3 operator*(const Vector3& v, float scalar);
 
 float Dot(Vector3& v1, Vector3& v2);
 float Length(const Vector3& v);
