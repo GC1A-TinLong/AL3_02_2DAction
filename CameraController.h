@@ -3,18 +3,18 @@
 #include "WorldTransform.h"
 #include <algorithm>
 
-struct Rect {
-	float left = 0.0f;
-	float right = 1.0f;
-	float bottom = 0.0f;
-	float top = 1.0f;
-};
-
 class Player;
 
 class CameraController {
 public:
-	void Initialize(ViewProjection* viewProjection, Rect moveableArea);
+	struct Rect {
+		float left = 0.0f;
+		float right = 1.0f;
+		float bottom = 0.0f;
+		float top = 1.0f;
+	};
+
+	void Initialize(ViewProjection* viewProjection, Rect movableArea);
 
 	void Update();
 
@@ -28,7 +28,7 @@ private:
 	static inline const float kVelocityBias = 2.7f;
 	static inline const Rect margin = {-14.0f, 14.0f, -14.0f, 14.0f};
 
-	ViewProjection *viewProjection_ = nullptr;
+	ViewProjection* viewProjection_ = nullptr;
 	WorldTransform worldTransform_;
 
 	Player* target_ = nullptr;
@@ -37,3 +37,5 @@ private:
 
 	Vector3 targetPosition_ = {};
 };
+
+//CameraController::Rect CameraController::movableArea_ = {0, 100.0f, 0, 100.0f};

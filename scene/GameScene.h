@@ -74,9 +74,9 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 
 	Player* player_ = nullptr;
-	Rect playerMovableArea = {2.0f, 115.5f, 2.0f, 100.0f};
+	CameraController::Rect playerMovableArea = {2.0f, 115.5f, 2.0f, 100.0f};
 	Model* modelPlayer_ = nullptr;
 
 	CameraController* cameraController_ = nullptr;
-	Rect cameraMovableArea = {27.8f, 172.0f, 15.2f, 100.0f};
+	CameraController::Rect cameraMovableArea = {27.8f, 172.0f, 15.2f, 100.0f};
 };

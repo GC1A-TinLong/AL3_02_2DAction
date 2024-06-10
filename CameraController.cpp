@@ -1,9 +1,9 @@
 #include "CameraController.h"
 #include "Player.h"
 
-void CameraController::Initialize(ViewProjection* viewProjection, Rect moveableArea) {
+void CameraController::Initialize(ViewProjection* viewProjection, Rect movableArea) {
 	viewProjection_ = viewProjection;
-	movableArea_ = moveableArea;
+	movableArea_ = movableArea;
 }
 
 void CameraController::Update() {

@@ -19,8 +19,18 @@ enum class LRDirection {
 	kLeft,
 };
 
+struct CollisionMapInfo {
+	bool isCollideCeiling = false;
+	bool isLanded = false;
+	bool isContactWall = false;
+	Vector3 velocity;
+};
+
 class Player {
 public:
+	static inline const float kWidth = 1.8f;
+	static inline const float kHeight = 1.8f;
+
 	Player();
 
 	~Player();
@@ -31,21 +41,34 @@ public:
 	/// <param name="model"></param>
 	/// <param name="textureHandle"></param>
 	/// <param name="viewProjection"></param>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, Rect movableArea);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, CameraController::Rect movableArea);
 	void Update();
 	void Draw();
 
 	void PlayerMovement();
+	void MovementInput();
 
+	void MoveByMapCollision(CollisionMapInfo& info);
+	void WhenHitCeiling(const CollisionMapInfo& info);
+
+	// Getter
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const Vector3& GetVelocity() const { return velocity_; };
-
+	// Setter
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
 private:
+	void IsCollideMapTop(CollisionMapInfo& info);
+	void IsCollideMapBottom(CollisionMapInfo& info);
+	void IsCollideMapLeft(CollisionMapInfo& info);
+	void IsCollideMapRight(CollisionMapInfo& info);
+	void MapCollision(CollisionMapInfo& info);
+
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;
 	static inline const float kMaxVelocity = 21.8f;
+
+	static inline const float kBlank = 1.0f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -54,7 +77,7 @@ private:
 	ViewProjection* viewProjection_ = nullptr;
 
 	Vector3 velocity_ = {};
-	Rect movableArea_ = {};
+	CameraController::Rect movableArea_ = {};
 	LRDirection lrDirection_ = LRDirection::kRight;
 	float turnFirstRotationY_ = 0.0f;
 	float turnTimer_ = 0;
@@ -63,7 +86,7 @@ private:
 	static inline const float kGravityAcceleration = 0.08f;
 	static inline const float kLimitFallSpeed = 1.2f;
 	static inline const float kJumpAcceleration = 1.2f;
-	bool onGroung_ = true;
+	bool onGround_ = true;
 
 	MapChipField* mapChipField_ = nullptr;
 };

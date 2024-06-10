@@ -9,6 +9,7 @@ static const int kRowHeight = 20;
 static const int kColumnWidth = 60;
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
+Vector3 operator+=(const Vector3& v1, const Vector3& v2);
 Vector3 operator-(const Vector3& v1, const Vector3& v2);
 Vector3 operator*(float scalar, const Vector3& v);
 Vector3 operator*(const Vector3& v, float scalar);
