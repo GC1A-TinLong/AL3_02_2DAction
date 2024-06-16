@@ -19,6 +19,8 @@ enum class LRDirection {
 	kLeft,
 };
 
+enum Corner { kBottomRight, kBottomLeft, kTopRight, kTopLeft, kNumCorner };
+
 struct CollisionMapInfo {
 	bool isCollideCeiling = false;
 	bool isLanded = false;
@@ -28,9 +30,6 @@ struct CollisionMapInfo {
 
 class Player {
 public:
-	static inline const float kWidth = 1.8f;
-	static inline const float kHeight = 1.8f;
-
 	Player();
 
 	~Player();
@@ -48,6 +47,7 @@ public:
 	void PlayerMovement();
 	void MovementInput();
 
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
 	void MoveByMapCollision(CollisionMapInfo& info);
 	void WhenHitCeiling(const CollisionMapInfo& info);
 
@@ -63,6 +63,9 @@ private:
 	void IsCollideMapLeft(CollisionMapInfo& info);
 	void IsCollideMapRight(CollisionMapInfo& info);
 	void MapCollision(CollisionMapInfo& info);
+
+	static inline const float kWidth = 1.8f;
+	static inline const float kHeight = 1.8f;
 
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;

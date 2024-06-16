@@ -55,12 +55,16 @@ MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex
 	return mapChipData_.data[yIndex][xIndex];
 }
 
-Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVertical - 1 - yIndex), 0); }
+Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { 
+	return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVertical - 1 - yIndex), 0); 
+}
 
 IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
 	IndexSet indexSet{};
-	indexSet.xIndex = uint32_t((position.x + (kBlockWidth / 2.0f)) / kBlockWidth);
-	indexSet.yIndex = uint32_t(kNumBlockVertical - 1 - ((position.y + (kBlockHeight / 2.0f)) / kBlockHeight));
+	indexSet.xIndex = uint32_t((position.x + (kBlockWidth / 2)) / kBlockWidth);
+	indexSet.yIndex = uint32_t((kBlockHeight * kNumBlockVertical - position.y) / kBlockHeight);
+	//indexSet.yIndex = uint32_t(kNumBlockVertical - 1 - ((position.y + (kBlockHeight / 2)) / kBlockHeight));
+	//indexSet.yIndex = (((uint32_t)kBlockHeight * (uint32_t)kNumBlockVertical - (uint32_t)position.y) / (uint32_t)kBlockHeight);
 	return indexSet;
 }
 
@@ -69,8 +73,8 @@ Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
 	Rect rect = {
 	    center.x - kBlockWidth / 2.0f,
 	    center.x + kBlockWidth / 2.0f,
-	    center.y - kBlockHeight / 2.0f,
 	    center.y + kBlockHeight / 2.0f,
+	    center.y - kBlockHeight / 2.0f,
 	};
 	return rect;
 }
