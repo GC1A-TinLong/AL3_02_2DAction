@@ -21,9 +21,8 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 void Player::PlayerMovement() { MovementInput(); }
 
 void Player::MovementInput() {
-	bool isLand = false;
+	// LR Movement
 	if (onGround_) {
-		// LR Movement
 		if (Input::GetInstance()->PushKey(DIK_D) || Input::GetInstance()->PushKey(DIK_A)) {
 			Vector3 acceleration = {};
 			if (Input::GetInstance()->PushKey(DIK_D)) {
@@ -57,7 +56,10 @@ void Player::MovementInput() {
 				velocity_.x = 0;
 			}
 		}
-		// Jump
+	}
+	// Jump
+	bool isLand = false;
+	if (onGround_) {
 		if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 			velocity_.y += kJumpAcceleration;
 		}
