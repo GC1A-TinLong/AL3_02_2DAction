@@ -66,9 +66,7 @@ void Player::MovementInput() {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
 		}
-		worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 	} else {
-		worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 		// Fall speed
 		velocity_.y += -kGravityAcceleration;
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
@@ -97,6 +95,21 @@ void Player::WhenHitCeiling(const CollisionMapInfo& info) {
 	if (info.isCollideCeiling) {
 		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
 		velocity_.y = 0;
+	}
+}
+
+void Player::WhenLanded(const CollisionMapInfo& info) {
+	if (onGround_) {
+		if (velocity_.y > 0.0f) {
+			onGround_ = false;
+		}
+	} else {
+		if (info.isLanded) {
+			onGround_ = true;
+			// when landed, decay the speed of x
+			velocity_.x *= (1.0f - kAttenuationLanding);
+			velocity_.y = 0.0f;
+		}
 	}
 }
 
@@ -139,9 +152,9 @@ void Player::IsCollideMapTop(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(
 			{worldTransform_.translation_.x/* - Player::kWidth / 2.0f*/, worldTransform_.translation_.y + kHeight / 2.0f, 0}
 		);
-		//indexSet = mapChipField_->GetMapChipIndexSetByPosition(velocity_);
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		info.velocity.y = std::max(0.0f, velocity_.y);
+		//info.velocity.y = std::max(0.0f, velocity_.y);
+		info.velocity.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - kHeight / 2 - kBlank);
 		// record it when hitting the ceiling
 		info.isCollideCeiling = true;
 	}
@@ -158,24 +171,32 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 	bool hit = false;
 	// check bottom left collision
 	IndexSet indexSet{};
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft]);
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft] + Vector3(0, -0.1f, 0));
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	} else {
 		// check bottom right collision
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft]);
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight] + Vector3(0, -0.1f, 0));
 		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 		if (mapChipType == MapChipType::kBlock) {
 			hit = true;
 		}
 	}
+	// Started falling
+	if (!hit) {
+		// Switch to airborne
+		onGround_ = false;
+	}
 
 	if (hit) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x /* - Player::kWidth / 2.0f*/, worldTransform_.translation_.y + kHeight / 2.0f, 0});
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(
+			{worldTransform_.translation_.x /* - Player::kWidth / 2.0f*/, worldTransform_.translation_.y - kHeight / 2.0f, 0}
+		);
 		// indexSet = mapChipField_->GetMapChipIndexSetByPosition(velocity_);
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		info.velocity.y = std::max(0.0f, velocity_.y);
+		//info.velocity.y = std::max(0.0f, velocity_.y);
+		info.velocity.y = std::min(0.0f, rect.bottom - worldTransform_.translation_.y - kBlank);
 		// record it when hitting the floor
 		info.isLanded = true;
 	}
@@ -209,6 +230,7 @@ void Player::Update() {
 	MapCollision(collisionMapInfo);
 	MoveByMapCollision(collisionMapInfo);
 	WhenHitCeiling(collisionMapInfo);
+	WhenLanded(collisionMapInfo);
 
 	worldTransform_.translation_.x = std::clamp(worldTransform_.translation_.x, movableArea_.left, movableArea_.right);
 	worldTransform_.translation_.y = std::clamp(worldTransform_.translation_.y, movableArea_.bottom, movableArea_.top);
@@ -230,8 +252,11 @@ void Player::Update() {
 	worldTransform_.UpdateMatrix();
 
 #ifdef _DEBUG
+	ImGui::Begin("window");
 	ImGui::InputFloat3("Velocity", &velocity_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
 	ImGui::InputFloat3("Translation", &worldTransform_.translation_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat3("info.velocity", &collisionMapInfo.velocity.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+	ImGui::End();
 #endif // _DEBUG
 }
 

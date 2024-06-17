@@ -50,6 +50,7 @@ public:
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 	void MoveByMapCollision(CollisionMapInfo& info);
 	void WhenHitCeiling(const CollisionMapInfo& info);
+	void WhenLanded(const CollisionMapInfo& info);
 
 	// Getter
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
@@ -89,6 +90,7 @@ private:
 	static inline const float kGravityAcceleration = 0.08f;
 	static inline const float kLimitFallSpeed = 1.2f;
 	static inline const float kJumpAcceleration = 1.2f;
+	static inline const float kAttenuationLanding = 0.2f;
 	bool onGround_ = true;
 
 	MapChipField* mapChipField_ = nullptr;
