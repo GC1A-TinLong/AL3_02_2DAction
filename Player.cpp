@@ -196,7 +196,7 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 		// indexSet = mapChipField_->GetMapChipIndexSetByPosition(velocity_);
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		//info.velocity.y = std::max(0.0f, velocity_.y);
-		info.velocity.y = std::min(0.0f, rect.bottom - worldTransform_.translation_.y - kBlank);
+		info.velocity.y = std::min(0.0f, rect.bottom - worldTransform_.translation_.y - kBlank); // calculate the velocty again
 		// record it when hitting the floor
 		info.isLanded = true;
 	}
