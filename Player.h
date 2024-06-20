@@ -22,9 +22,9 @@ enum class LRDirection {
 enum Corner { kBottomRight, kBottomLeft, kTopRight, kTopLeft, kNumCorner };
 
 struct CollisionMapInfo {
-	bool isCollideCeiling = false;
-	bool isLanded = false;
-	bool isContactWall = false;
+	bool isHitCeiling = false;
+	bool isHitGround = false;
+	bool isHitWall = false;
 	Vector3 velocity;
 };
 
@@ -48,9 +48,10 @@ public:
 	void MovementInput();
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
-	void MoveByMapCollision(CollisionMapInfo& info);
+	void MovementByMapCollision(CollisionMapInfo& info);
 	void WhenHitCeiling(const CollisionMapInfo& info);
-	void WhenLanded(const CollisionMapInfo& info);
+	void SwitchToOnGround(const CollisionMapInfo& info);
+	void WhenHitWall(const CollisionMapInfo& info);
 
 	// Getter
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
@@ -73,6 +74,7 @@ private:
 	static inline const float kMaxVelocity = 21.8f;
 
 	static inline const float kBlank = 1.0f;
+	static inline const float kGroundDistance = -0.2f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -88,10 +90,12 @@ private:
 	static inline const float kTimeTurn = 0.3f;
 
 	static inline const float kGravityAcceleration = 0.08f;
-	static inline const float kLimitFallSpeed = 1.2f;
+	static inline const float kLimitFallSpeed = 1.4f;
 	static inline const float kJumpAcceleration = 1.2f;
 	static inline const float kAttenuationLanding = 0.2f;
 	bool onGround_ = true;
+
+	static inline const float kAttenuationWall = 0.2f;
 
 	MapChipField* mapChipField_ = nullptr;
 };
