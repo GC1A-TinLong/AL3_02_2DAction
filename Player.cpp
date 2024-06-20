@@ -185,7 +185,7 @@ void Player::IsCollideMapTop(CollisionMapInfo& info) {
 	if (hit) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y + kHeight / 2.0f, 0});
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		info.velocity.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - kHeight / 2 - kBlank); //
+		info.velocity.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - kHeight + 0.2f); //
 		// record it when hitting the ceiling
 		info.isHitCeiling = true;
 	}
