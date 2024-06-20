@@ -110,7 +110,7 @@ void Player::SwitchToOnGround(const CollisionMapInfo& info) {
 			// Check directly below
 			// check bottom left collision
 			IndexSet indexSet{};
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft] + Vector3(0, kGroundDistance, 0));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft] + Vector3(0, kAboveGroundDistance, 0));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 
 			bool hit = false;
@@ -118,7 +118,7 @@ void Player::SwitchToOnGround(const CollisionMapInfo& info) {
 				hit = true;
 			}
 			// check bottom right collision
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight] + Vector3(0, kGroundDistance, 0));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight] + Vector3(0, kAboveGroundDistance, 0));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
@@ -204,13 +204,13 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 	bool hit = false;
 	// check bottom left collision
 	IndexSet indexSet{};
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft] + Vector3(0, kGroundDistance, 0));
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft] + Vector3(0, kAboveGroundDistance, 0));
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 	// check bottom right collision
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight] + Vector3(0, kGroundDistance, 0));
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight] + Vector3(0, kAboveGroundDistance, 0));
 	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;

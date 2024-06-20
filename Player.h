@@ -74,7 +74,7 @@ private:
 	static inline const float kMaxVelocity = 21.8f;
 
 	static inline const float kBlank = 1.0f;
-	static inline const float kGroundDistance = -0.2f;
+	static inline const float kAboveGroundDistance = -0.2f;
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
