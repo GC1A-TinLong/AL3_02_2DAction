@@ -87,6 +87,22 @@ void Player::MovementInput() {
 	}
 }
 
+void Player::PlayerDirection() {
+	if (turnTimer_ > 0.0f) {
+		turnTimer_ -= 1.0f / 60.0f;
+		// Player's Left & Right angle table
+		float destinationRotationYTable[] = {
+		    std::numbers::pi_v<float> / 2.0f,
+		    std::numbers::pi_v<float> * 3.0f / 2.0f,
+		};
+		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+		float easing = 1 - turnTimer_ / kTimeTurn;
+		float nowRotationY = std::lerp(turnFirstRotationY_, destinationRotationY, easing);
+		// Get angle from status
+		worldTransform_.rotation_.y = nowRotationY;
+	}
+}
+
 void Player::MovementByMapCollision(CollisionMapInfo& info) { worldTransform_.translation_ += info.velocity; }
 
 void Player::WhenHitCeiling(const CollisionMapInfo& info) {
@@ -223,7 +239,7 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 	}
 
 	if (hit) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x  + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		// calculate the velocty again to prevent going underground
 		info.velocity.y = std::min(0.0f, rect.bottom - worldTransform_.translation_.y - kBlank);
@@ -259,18 +275,19 @@ void Player::IsCollideMapLeft(CollisionMapInfo& info) {
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft]);
-	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock) {
-		hit = true;
+	if (!isOnGround) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft]);
+		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+		if (mapChipType == MapChipType::kBlock) {
+			hit = true;
+		}
 	}
 
-
-	if (hit && !isOnGround) {
+	if (hit) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		// calculate the velocty again to prevent going inside wall
-		info.velocity.x = std::min(0.0f, rect.right - worldTransform_.translation_.x - kBlank);
+		info.velocity.x = std::min(0.0f, rect.right - worldTransform_.translation_.x + kBlank);
 		// record it when hitting the floor
 		info.isHitWall = true;
 	}
@@ -304,22 +321,11 @@ void Player::Update() {
 
 	MapCollision(collisionMapInfo);
 
+	// Restrict movable area
 	worldTransform_.translation_.x = std::clamp(worldTransform_.translation_.x, movableArea_.left, movableArea_.right);
 	worldTransform_.translation_.y = std::clamp(worldTransform_.translation_.y, movableArea_.bottom, movableArea_.top);
 
-	if (turnTimer_ > 0.0f) {
-		turnTimer_ -= 1.0f / 60.0f;
-		// Player's Left & Right angle table
-		float destinationRotationYTable[] = {
-		    std::numbers::pi_v<float> / 2.0f,
-		    std::numbers::pi_v<float> * 3.0f / 2.0f,
-		};
-		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-		float easing = 1 - turnTimer_ / kTimeTurn;
-		float nowRotationY = std::lerp(turnFirstRotationY_, destinationRotationY, easing);
-		// Get angle from status
-		worldTransform_.rotation_.y = nowRotationY;
-	}
+	PlayerDirection();
 
 	worldTransform_.UpdateMatrix();
 

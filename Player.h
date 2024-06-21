@@ -46,6 +46,7 @@ public:
 
 	void PlayerMovement();
 	void MovementInput();
+	void PlayerDirection();
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 	void MovementByMapCollision(CollisionMapInfo& info);
