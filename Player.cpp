@@ -287,7 +287,7 @@ void Player::IsCollideMapLeft(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		// calculate the velocty again to prevent going inside wall
-		info.velocity.x = std::min(0.0f, rect.right - worldTransform_.translation_.x + kBlank);
+		info.velocity.x = std::min(0.0f, rect.left + worldTransform_.translation_.x - kBlank);
 		// record it when hitting the floor
 		info.isHitWall = true;
 	}
