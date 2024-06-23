@@ -71,8 +71,8 @@ IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
 Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
 	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
 	Rect rect = {
-	    center.x - kBlockWidth / 2.0f,
-	    center.x + kBlockWidth / 2.0f,
+	    center.x - kBlockWidth  / 2.0f,
+	    center.x + kBlockWidth  / 2.0f,
 	    center.y + kBlockHeight / 2.0f,
 	    center.y - kBlockHeight / 2.0f,
 	};

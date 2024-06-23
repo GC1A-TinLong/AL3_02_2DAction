@@ -72,7 +72,7 @@ private:
 
 	static inline const float kAcceleration = 0.05f;
 	static inline const float kAttenuation = 0.15f;
-	static inline const float kMaxVelocity = 21.8f;
+	static inline const float kMaxVelocity = 9.8f;
 
 	static inline const float kBlank = 1.0f;
 	static inline const float kAboveGroundDistance = -0.2f;

@@ -287,7 +287,7 @@ void Player::IsCollideMapLeft(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
 		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		// calculate the velocty again to prevent going inside wall
-		info.velocity.x = std::min(0.0f, rect.left + worldTransform_.translation_.x - kBlank);
+		info.velocity.x = std::min(0.0f, rect.left - worldTransform_.translation_.x + kBlank);
 		// record it when hitting the floor
 		info.isHitWall = true;
 	}
@@ -296,6 +296,45 @@ void Player::IsCollideMapRight(CollisionMapInfo& info) {
 	std::array<Vector3, 4> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
+	}
+	if (velocity_.x < 0) {
+		return;
+	}
+
+	MapChipType mapChipType{};
+	// Check directly below
+	bool hit = false;
+	IndexSet indexSet{};
+
+	bool isOnGround = true;
+	IndexSet botLeftIndex = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomLeft]);
+	IndexSet botRightIndex = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight]);
+	MapChipType botLeftType = mapChipField_->GetMapChipTypeByIndex(botLeftIndex.xIndex, botLeftIndex.yIndex);
+	MapChipType botRightType = mapChipField_->GetMapChipTypeByIndex(botRightIndex.xIndex, botRightIndex.yIndex);
+	if (botLeftType == MapChipType::kBlock && botRightType == MapChipType::kBlock) {
+		isOnGround = true;
+	}
+
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kTopRight]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+	if (!isOnGround) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kBottomRight]);
+		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+		if (mapChipType == MapChipType::kBlock) {
+			hit = true;
+		}
+	}
+
+	if (hit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition({worldTransform_.translation_.x + kWidth / 2.0f, worldTransform_.translation_.y - kHeight / 2.0f, 0});
+		Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		// calculate the velocty again to prevent going inside wall
+		info.velocity.x = std::min(0.0f, rect.right - worldTransform_.translation_.x );
+		// record it when hitting the floor
+		info.isHitWall = true;
 	}
 }
 
