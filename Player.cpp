@@ -299,12 +299,12 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 	}
 }
 void Player::IsCollideMapLeft(CollisionMapInfo& info) {
+	if (velocity_.x > 0) {
+		return;
+	}
 	std::array<Vector3, kNumCorner> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
-	}
-	if (velocity_.x > 0) {
-		return;
 	}
 
 	MapChipType mapChipType{};
@@ -344,12 +344,12 @@ void Player::IsCollideMapLeft(CollisionMapInfo& info) {
 	}
 }
 void Player::IsCollideMapRight(CollisionMapInfo& info) {
+	if (velocity_.x < 0) {
+		return;
+	}
 	std::array<Vector3, kNumCorner> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
-	}
-	if (velocity_.x < 0) {
-		return;
 	}
 
 	MapChipType mapChipType{};
