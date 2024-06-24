@@ -18,6 +18,33 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 }
 
+void Player::Update() {
+	PlayerMovement();
+
+	CollisionMapInfo collisionMapInfo; // Initializing collision info
+	collisionMapInfo.velocity = velocity_;
+
+	MapCollision(collisionMapInfo);
+
+	// Restrict movable area
+	worldTransform_.translation_.x = std::clamp(worldTransform_.translation_.x, movableArea_.left, movableArea_.right);
+	worldTransform_.translation_.y = std::clamp(worldTransform_.translation_.y, movableArea_.bottom, movableArea_.top);
+
+	PlayerDirection();
+
+	worldTransform_.UpdateMatrix();
+
+#ifdef _DEBUG
+	ImGui::Begin("window");
+	ImGui::InputFloat3("Velocity", &velocity_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat3("Translation", &worldTransform_.translation_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat3("info.velocity", &collisionMapInfo.velocity.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+	ImGui::End();
+#endif // _DEBUG
+}
+
+void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_, textureHandle_); }
+
 void Player::PlayerMovement() { MovementInput(); }
 
 void Player::MovementInput() {
@@ -351,30 +378,3 @@ void Player::MapCollision(CollisionMapInfo& info) {
 
 	MovementByMapCollision(info);
 }
-
-void Player::Update() {
-	PlayerMovement();
-
-	CollisionMapInfo collisionMapInfo; // Initializing collision info
-	collisionMapInfo.velocity = velocity_;
-
-	MapCollision(collisionMapInfo);
-
-	// Restrict movable area
-	worldTransform_.translation_.x = std::clamp(worldTransform_.translation_.x, movableArea_.left, movableArea_.right);
-	worldTransform_.translation_.y = std::clamp(worldTransform_.translation_.y, movableArea_.bottom, movableArea_.top);
-
-	PlayerDirection();
-
-	worldTransform_.UpdateMatrix();
-
-#ifdef _DEBUG
-	ImGui::Begin("window");
-	ImGui::InputFloat3("Velocity", &velocity_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-	ImGui::InputFloat3("Translation", &worldTransform_.translation_.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-	ImGui::InputFloat3("info.velocity", &collisionMapInfo.velocity.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-	ImGui::End();
-#endif // _DEBUG
-}
-
-void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_, textureHandle_); }

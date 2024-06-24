@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "MapChipField.h"
 #include "CameraController.h"
+#include "Enemy.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -55,7 +56,6 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	uint32_t playerTexture_ = 0;
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
@@ -67,16 +67,26 @@ private: // メンバ変数
 
 	MapChipField* mapChipField_;
 
+	// Block model
 	Model* modelBlock_ = nullptr;
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
+	// Skydome
 	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 
+	// Player
 	Player* player_ = nullptr;
+	uint32_t playerTexture_ = 0;
 	CameraController::Rect playerMovableArea = {2.0f, 115.5f, 2.0f, 100.0f};
-	Model* modelPlayer_ = nullptr;
+	Model* playerModel_ = nullptr;
 
+	// Enemy
+	Enemy* enemy_ = nullptr;
+	Model* enemyModel_ = nullptr;
+	uint32_t enemyTexture_ = 0u;
+
+	// Camera
 	CameraController* cameraController_ = nullptr;
 	CameraController::Rect cameraMovableArea = {27.8f, 172.0f, 15.2f, 100.0f};
 };

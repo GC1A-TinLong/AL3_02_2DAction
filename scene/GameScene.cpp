@@ -8,9 +8,11 @@ GameScene::~GameScene() {
 	delete mapChipField_;
 	delete skydome_;
 	delete modelSkydome_;
-	delete modelPlayer_;
+	delete playerModel_;
 	delete modelBlock_;
 	delete player_;
+	delete enemy_;
+	delete enemyModel_;
 	delete cameraController_;
 
 #ifdef _DEBUG
@@ -48,12 +50,18 @@ void GameScene::Initialize() {
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 	// Player
 	player_ = new Player();
-	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	playerModel_ = Model::CreateFromOBJ("player", true);
 	playerTexture_ = TextureManager::Load("sample.png");
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
-	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition, playerMovableArea);
+	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
-
+	// Enemy
+	enemy_ = new Enemy;
+	enemyModel_ = Model::CreateFromOBJ("enemy",true);
+	//enemyTexture_ = TextureManager::Load("debugfont.png");
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(16, 18);
+	enemy_->Initialize(enemyModel_, &viewProjection_, enemyPosition, enemyTexture_);
+	// Camera
 	cameraController_ = new CameraController;
 	cameraController_->Initialize(&viewProjection_, cameraMovableArea);
 	cameraController_->SetTarget(player_);
@@ -74,6 +82,11 @@ void GameScene::Update() {
 	}
 
 	player_->Update();
+
+	if (enemy_) {
+		enemy_->Update();
+	}
+
 	cameraController_->Update();
 
 #ifdef _DEBUG
@@ -117,6 +130,10 @@ void GameScene::Draw() {
 	skydome_->Draw();
 
 	player_->Draw();
+
+	if (enemy_) {
+		enemy_->Draw();
+	}
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
