@@ -50,6 +50,10 @@ public: // メンバ関数
 	void Draw();
 
 	void GenerateBlocks();
+	/// <summary>
+	/// Check all collisions
+	/// </summary>
+	void CheckAllCollisions();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -80,11 +84,15 @@ private: // メンバ変数
 	uint32_t playerTexture_ = 0;
 	CameraController::Rect playerMovableArea = {2.0f, 115.5f, 2.0f, 100.0f};
 	Model* playerModel_ = nullptr;
+	bool isPlayerHit = false;
 
 	// Enemy
 	Enemy* enemy_ = nullptr;
 	Model* enemyModel_ = nullptr;
 	uint32_t enemyTexture_ = 0u;
+
+	static inline const int32_t kEnemyNum = 3;
+	std::list<Enemy*> enemies_;
 
 	// Camera
 	CameraController* cameraController_ = nullptr;

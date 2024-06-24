@@ -13,6 +13,7 @@
 #include "CameraController.h"
 
 class MapChipField;
+class Enemy;
 
 enum class LRDirection {
 	kRight,
@@ -54,9 +55,14 @@ public:
 	void SwitchToOnGround(const CollisionMapInfo& info);
 	void WhenHitWall(const CollisionMapInfo& info);
 
+	// Collision
+	void OnCollision(const Enemy* enemy);
+
 	// Getter
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const Vector3& GetVelocity() const { return velocity_; };
+	const Vector3 GetWorldPosition();
+	const AABB GetAABB();
 	// Setter
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 

@@ -15,6 +15,11 @@ GameScene::~GameScene() {
 	delete enemyModel_;
 	delete cameraController_;
 
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
+	enemies_.clear();
+
 #ifdef _DEBUG
 	delete debugCamera_;
 #endif // _DEBUG
@@ -57,10 +62,15 @@ void GameScene::Initialize() {
 	player_->SetMapChipField(mapChipField_);
 	// Enemy
 	enemy_ = new Enemy;
-	enemyModel_ = Model::CreateFromOBJ("enemy",true);
-	//enemyTexture_ = TextureManager::Load("debugfont.png");
-	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(16, 18);
-	enemy_->Initialize(enemyModel_, &viewProjection_, enemyPosition, enemyTexture_);
+	enemyModel_ = Model::CreateFromOBJ("enemy", true);
+
+	for (int32_t i = 0; i < kEnemyNum; i++) {
+		Enemy* newEnemy = new Enemy;
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(12 + (i * 2), 18 - (i * 2));
+		newEnemy->Initialize(enemyModel_, &viewProjection_, enemyPosition);
+
+		enemies_.push_back(newEnemy);
+	}
 	// Camera
 	cameraController_ = new CameraController;
 	cameraController_->Initialize(&viewProjection_, cameraMovableArea);
@@ -84,10 +94,14 @@ void GameScene::Update() {
 	player_->Update();
 
 	if (enemy_) {
-		enemy_->Update();
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
+		}
 	}
 
 	cameraController_->Update();
+
+	CheckAllCollisions();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_F)) {
@@ -132,7 +146,9 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	if (enemy_) {
-		enemy_->Draw();
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
+		}
 	}
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -185,4 +201,34 @@ void GameScene::GenerateBlocks() {
 			}
 		}
 	}
+}
+
+void GameScene::CheckAllCollisions() {
+#pragma region player & enemy collision
+	AABB aabb1{}, aabb2{};
+	// Player position
+	aabb1 = player_->GetAABB();
+
+	// Player & all enemy collisions
+	for (Enemy* enemy : enemies_) {
+		aabb2 = enemy->GetAABB();
+
+		if (IsCollideAABB(aabb1, aabb2)) {
+			isPlayerHit = true;
+		}
+		if (isPlayerHit) {
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
+	}
+
+#pragma endregion
+
+#pragma region player & item collision
+
+#pragma endregion
+
+#pragma region player bullet & enemy collision
+
+#pragma endregion
 }

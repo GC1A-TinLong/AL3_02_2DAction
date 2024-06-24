@@ -6,14 +6,21 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+class Player;
+
 class Enemy {
 public:
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, uint32_t textureHandle);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 
 	void Update();
 
 	void Draw();
 
+	void OnCollision(const Player* player);
+
+	// Getter
+	const Vector3 GetWorldPosition();
+	const AABB GetAABB();
 	// Setter
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
@@ -22,6 +29,10 @@ private:
 		kRight,
 		kLeft,
 	};
+	// Size
+	static inline const float kWidth = 1.8f;
+	static inline const float kHeight = 1.8f;
+
 	// Walking speed
 	static inline const float kWalkSpeed = 0.05f;
 	static inline const float kInitialWalkMotionAngle = -60.0f; // Initial angle
@@ -37,6 +48,5 @@ private:
 
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
-	uint32_t textureHandle_ = 0u;
 	ViewProjection* viewProjection_ = nullptr;
 };

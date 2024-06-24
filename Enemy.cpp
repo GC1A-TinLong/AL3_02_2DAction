@@ -1,10 +1,9 @@
 #include "Enemy.h"
 
-void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, uint32_t textureHandle) {
+void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	assert(model);
 	model_ = model;
 	viewProjection_ = viewProjection;
-	textureHandle_ = textureHandle;
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
@@ -26,4 +25,25 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_, textureHandle_); }
+void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+
+void Enemy::OnCollision(const Player* player) { (void)player; }
+
+const Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos{};
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
+const AABB Enemy::GetAABB() {
+	Vector3 worldPos = GetWorldPosition();
+
+	AABB aabb{};
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.min = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+
+	return aabb;
+}
