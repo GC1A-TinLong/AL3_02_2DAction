@@ -190,7 +190,7 @@ void Player::WhenHitWall(const CollisionMapInfo& info) {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	velocity_ += Vector3(0, 0.2f, 0);
+	velocity_ += Vector3(0, 1.2f, 0);
 }
 
 const Vector3 Player::GetWorldPosition() {
@@ -207,7 +207,7 @@ const AABB Player::GetAABB() {
 
 	AABB aabb{};
 	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
-	aabb.min = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
 
 	return aabb;
 }

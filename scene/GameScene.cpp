@@ -214,9 +214,6 @@ void GameScene::CheckAllCollisions() {
 		aabb2 = enemy->GetAABB();
 
 		if (IsCollideAABB(aabb1, aabb2)) {
-			isPlayerHit = true;
-		}
-		if (isPlayerHit) {
 			player_->OnCollision(enemy);
 			enemy->OnCollision(player_);
 		}
