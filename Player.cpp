@@ -207,7 +207,7 @@ void Player::IsCollideMapTop(CollisionMapInfo& info) {
 	}
 }
 void Player::IsCollideMapBottom(CollisionMapInfo& info) {
-	std::array<Vector3, 4> positionNew{};
+	std::array<Vector3, kNumCorner> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
 	}
@@ -248,7 +248,7 @@ void Player::IsCollideMapBottom(CollisionMapInfo& info) {
 	}
 }
 void Player::IsCollideMapLeft(CollisionMapInfo& info) {
-	std::array<Vector3, 4> positionNew{};
+	std::array<Vector3, kNumCorner> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
 	}
@@ -293,7 +293,7 @@ void Player::IsCollideMapLeft(CollisionMapInfo& info) {
 	}
 }
 void Player::IsCollideMapRight(CollisionMapInfo& info) {
-	std::array<Vector3, 4> positionNew{};
+	std::array<Vector3, kNumCorner> positionNew{};
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
 	}
@@ -337,98 +337,6 @@ void Player::IsCollideMapRight(CollisionMapInfo& info) {
 		info.isHitWall = true;
 	}
 }
-/*void Player::CollisionRight(CollisionMapInfo& info)
-{
-    std::array<Vector3, kNumCorner> positionsNew;
-    for (uint32t i = 0; i < positionsNew.size(); i++)
-    {
-        positionsNew[i] = CornerPositon(worldTransform.translation + info.movement, static_cast<Corner>(i));
-    }
-
-    // Initialize the hitRightWall flag to false at the beginning
-    hitRightWall = false;
-
-    // Always perform the collision check, regardless of movement direction
-    MapChipType mapChipType;
-    bool hit = false;
-    IndexSet indexSet;
-
-    indexSet = mapChipField->GetMapChipIndexSetByPosition(positionsNew[kRightTop] + Vector3(kAdjustWall, 0, 0));
-    mapChipType = mapChipField->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex - 1);
-    if (mapChipType == MapChipType::kBlock)
-    {
-        hit = true;
-    }
-
-    indexSet = mapChipField->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] + Vector3(kAdjustWall, 0, 0));
-    mapChipType = mapChipField->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex - 1);
-    if (mapChipType == MapChipType::kBlock)
-    {
-        hit = true;
-    }
-
-    if (hit)
-    {
-        indexSet = mapChipField->GetMapChipIndexSetByPosition(info.movement.x);
-        Rect rect = mapChipField->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-        info.isHittingRightWall = true;
-        if (info.movement.x > 0) // Only set movement to 0 if moving right
-        {
-            info.movement.x = 0.0f;
-            velocity.x = 0.0f;
-        }
-        hitRightWall = true;
-    }
-    else
-    {
-        info.isHittingRightWall = false;
-    }
-}
-void Player::CollisionLeft(CollisionMapInfo& info)
-{
-    std::array<Vector3, kNumCorner> positionsNew;
-
-    for (uint32t i = 0; i < positionsNew.size(); i++)
-    {
-        positionsNew[i] = CornerPositon(worldTransform.translation + info.movement, static_cast<Corner>(i));
-    }
-
-    hitLeftWall = false;
-
-
-    MapChipType mapChipType;
-    bool hit = false;
-    IndexSet indexSet;
-
-    indexSet = mapChipField->GetMapChipIndexSetByPosition(positionsNew[kLeftTop] + Vector3(-kAdjustWall, 0, 0));
-    mapChipType = mapChipField->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex - 1);
-    if (mapChipType == MapChipType::kBlock)
-    {
-        hit = true;
-    }
-    indexSet = mapChipField->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] + Vector3(-kAdjustWall, 0, 0));
-    mapChipType = mapChipField->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex - 1);
-    if (mapChipType == MapChipType::kBlock)
-    {
-        hit = true;
-    }
-    if (hit)
-    {
-        indexSet = mapChipField->GetMapChipIndexSetByPosition(info.movement.x);
-        Rect rect = mapChipField->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-        info.isHittingLeftWall = true;
-        if (info.movement.x < 0) // Only set movement to 0 if moving right
-        {
-            info.movement.x = 0.0f;
-            velocity.x = 0.0f;
-        }
-        hitLeftWall = true;
-    }
-    else
-    {
-        info.isHittingLeftWall = false;
-    }
-}*/
 
 void Player::MapCollision(CollisionMapInfo& info) {
 	IsCollideMapTop(info);
