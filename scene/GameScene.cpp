@@ -11,6 +11,10 @@ GameScene::~GameScene() {
 	delete playerModel_;
 	delete modelBlock_;
 	delete player_;
+	if (deathParticles_) {
+		delete deathParticles_;
+		delete deathParticlesModel_;
+	}
 	delete enemy_;
 	delete enemyModel_;
 	delete cameraController_;
@@ -60,6 +64,10 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
+
+	deathParticles_ = new DeathParticles;	// Death Particles
+	deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
+	deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
 	// Enemy
 	enemy_ = new Enemy;
 	enemyModel_ = Model::CreateFromOBJ("enemy", true);
@@ -92,6 +100,9 @@ void GameScene::Update() {
 	}
 
 	player_->Update();
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
 
 	if (enemy_) {
 		for (Enemy* enemy : enemies_) {
@@ -144,6 +155,9 @@ void GameScene::Draw() {
 	skydome_->Draw();
 
 	player_->Draw();
+	if (deathParticles_) {
+		deathParticles_->Draw();
+	}
 
 	if (enemy_) {
 		for (Enemy* enemy : enemies_) {

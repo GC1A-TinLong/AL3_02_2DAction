@@ -3,8 +3,7 @@
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <numbers>
 
 class Player;
 

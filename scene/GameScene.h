@@ -14,6 +14,7 @@
 #include "MapChipField.h"
 #include "CameraController.h"
 #include "Enemy.h"
+#include "DeathParticles.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -85,6 +86,9 @@ private: // メンバ変数
 	CameraController::Rect playerMovableArea = {2.0f, 115.5f, 2.0f, 100.0f};
 	Model* playerModel_ = nullptr;
 	bool isPlayerHit = false;
+
+	DeathParticles* deathParticles_ = nullptr;	// Death Particles
+	Model* deathParticlesModel_ = nullptr;
 
 	// Enemy
 	Enemy* enemy_ = nullptr;
