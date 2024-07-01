@@ -56,7 +56,17 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
+	void ChangePhase();
+
+	// Getter
+
 private: // メンバ変数
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+	Phase phase_;	// current phase
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -87,7 +97,8 @@ private: // メンバ変数
 	Model* playerModel_ = nullptr;
 	bool isPlayerHit = false;
 
-	DeathParticles* deathParticles_ = nullptr;	// Death Particles
+	// Death Particles
+	DeathParticles* deathParticles_ = nullptr;	
 	Model* deathParticlesModel_ = nullptr;
 
 	// Enemy

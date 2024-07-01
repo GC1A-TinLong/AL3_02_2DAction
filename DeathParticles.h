@@ -28,6 +28,6 @@ private:
 	Vector4 color_;
 
 	std::array<WorldTransform, kNumParticles> worldTransform_;
-	std::array<Model*, kNumParticles> model_;
+	Model* model_;
 	ViewProjection* viewProjection_ = nullptr;
 };

@@ -1,10 +1,8 @@
 #include "DeathParticles.h"
 
 void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
-	for (auto& deathModel : this->model_) {
-		assert(model);
-		deathModel = model;
-	}
+	assert(model);
+	model_ = model;
 	viewProjection_ = viewProjection;
 
 	objectColor_.Initialize();
@@ -50,7 +48,7 @@ void DeathParticles::Draw() {
 		return;
 	}
 
-	for (int i = 0; i < kNumParticles; i++) {
-		model_[i]->Draw(worldTransform_[i], *viewProjection_, &objectColor_);
+	for (auto& worldTransform : worldTransform_) {
+		model_->Draw(worldTransform, *viewProjection_, &objectColor_);
 	}
 }

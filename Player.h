@@ -64,6 +64,7 @@ public:
 	const Vector3& GetVelocity() const { return velocity_; };
 	const Vector3 GetWorldPosition();
 	const AABB GetAABB();
+	bool IsDead() const { return isDead_; }
 	// Setter
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
@@ -107,8 +108,9 @@ private:
 	static inline const float kJumpAcceleration = 1.2f;
 	static inline const float kAttenuationLanding = 0.2f;
 	bool onGround_ = true;
-
 	static inline const float kAttenuationWall = 0.2f;
+
+	bool isDead_ = false;
 
 	MapChipField* mapChipField_ = nullptr;
 };

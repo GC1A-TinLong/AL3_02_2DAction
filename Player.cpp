@@ -193,7 +193,7 @@ void Player::OnCollision(const Enemy* enemy) {
 	if (deathParticles_) {
 		deathParticles_->Update();
 	}
-	/*velocity_ += Vector3(0, 1.2f, 0);*/
+	isDead_ = true;
 }
 
 const Vector3 Player::GetWorldPosition() {

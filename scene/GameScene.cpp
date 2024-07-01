@@ -8,8 +8,8 @@ GameScene::~GameScene() {
 	delete mapChipField_;
 	delete skydome_;
 	delete modelSkydome_;
-	delete playerModel_;
 	delete modelBlock_;
+	delete playerModel_;
 	delete player_;
 	if (deathParticles_) {
 		delete deathParticles_;
@@ -47,6 +47,9 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(kWindowWidth, kWindowHeight);
 #endif _DEBUG
 
+	// Game Phase
+	phase_ = Phase::kPlay;
+
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipVsc("Resources/blocks.csv");
 
@@ -64,10 +67,8 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
-
-	deathParticles_ = new DeathParticles;	// Death Particles
-	deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
-	deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
+	// Death Particles
+	//deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
 	// Enemy
 	enemy_ = new Enemy;
 	enemyModel_ = Model::CreateFromOBJ("enemy", true);
@@ -87,32 +88,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	skydome_->Update();
 
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock) {
-				continue;
-			}
-			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
-			worldTransformBlock->TransferMatrix();
-		}
-	}
-
-	player_->Update();
-	if (deathParticles_) {
-		deathParticles_->Update();
-	}
-
-	if (enemy_) {
-		for (Enemy* enemy : enemies_) {
-			enemy->Update();
-		}
-	}
-
-	cameraController_->Update();
-
-	CheckAllCollisions();
+	ChangePhase();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_F)) {
@@ -154,7 +131,9 @@ void GameScene::Draw() {
 
 	skydome_->Draw();
 
-	player_->Draw();
+	if (player_) {
+		player_->Draw();
+	}
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
@@ -242,4 +221,70 @@ void GameScene::CheckAllCollisions() {
 #pragma region player bullet & enemy collision
 
 #pragma endregion
+}
+
+void GameScene::ChangePhase() {
+	if (player_->IsDead()) {
+		phase_ = Phase::kDeath;
+		const Vector3& deathParticlesPosition = player_->GetWorldPosition();
+		// initialize particle effect at player position
+		if (deathParticles_) {
+			deathParticles_ = new DeathParticles;
+			deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
+			deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
+		}
+	}
+
+	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
+
+	switch (phase_) {
+	case Phase::kPlay:
+		skydome_->Update(); // skydome update
+		player_->Update();  // player update
+		if (enemy_) {       //	enemy update
+			for (Enemy* enemy : enemies_) {
+				enemy->Update();
+			}
+		}
+		// camera update
+		cameraController_->Update();
+		// block update
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock) {
+					continue;
+				}
+				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+				worldTransformBlock->TransferMatrix();
+			}
+		}
+		CheckAllCollisions(); // checking all collision
+
+		break;
+
+	case Phase::kDeath:
+		skydome_->Update(); // skydome update
+		if (enemy_) {       //	enemy update
+			for (Enemy* enemy : enemies_) {
+				enemy->Update();
+			}
+		}
+		if (deathParticles_) { // death particles update
+			deathParticles_->Update();
+		}
+		// camera update
+		cameraController_->Update();
+		// block update
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock) {
+					continue;
+				}
+				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+				worldTransformBlock->TransferMatrix();
+			}
+		}
+
+		break;
+	}
 }
