@@ -11,6 +11,7 @@
 #include <numbers>
 #include <algorithm>
 #include "CameraController.h"
+#include "DeathParticles.h"
 
 class MapChipField;
 class Enemy;
@@ -91,6 +92,8 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	ViewProjection* viewProjection_ = nullptr;
+
+	DeathParticles* deathParticles_;
 
 	Vector3 velocity_ = {};
 	CameraController::Rect movableArea_ = {};

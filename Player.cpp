@@ -190,7 +190,10 @@ void Player::WhenHitWall(const CollisionMapInfo& info) {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	velocity_ += Vector3(0, 1.2f, 0);
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
+	/*velocity_ += Vector3(0, 1.2f, 0);*/
 }
 
 const Vector3 Player::GetWorldPosition() {

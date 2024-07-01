@@ -15,9 +15,17 @@ public:
 
 private:
 	static inline const uint32_t kNumParticles = 8;
-	static inline const float kDuration = 0.8f;
-	static inline const float kSpeed = 0.05f;
-	static inline const float kAngleUnit = (2 * std::numbers::pi_v<float> / kNumParticles); // angle per nums of particle
+	static inline const float kDuration = 1.5f;
+	static inline const float kSpeed = 0.05f;	// particle speed
+	// angle per nums of particle
+	static inline const float kAngleUnit = (2 * std::numbers::pi_v<float> / kNumParticles); 
+
+	bool isFinished_ = false;
+	float timer_ = 1.0f / 60.0f;
+	float counter_ = 0.0f;
+
+	ObjectColor objectColor_;
+	Vector4 color_;
 
 	std::array<WorldTransform, kNumParticles> worldTransform_;
 	std::array<Model*, kNumParticles> model_;
