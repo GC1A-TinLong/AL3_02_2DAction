@@ -68,7 +68,7 @@ void GameScene::Initialize() {
 	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
 	// Death Particles
-	//deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
+	// deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
 	// Enemy
 	enemy_ = new Enemy;
 	enemyModel_ = Model::CreateFromOBJ("enemy", true);
@@ -228,14 +228,10 @@ void GameScene::ChangePhase() {
 		phase_ = Phase::kDeath;
 		const Vector3& deathParticlesPosition = player_->GetWorldPosition();
 		// initialize particle effect at player position
-		if (deathParticles_) {
-			deathParticles_ = new DeathParticles;
-			deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
-			deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
-		}
+		deathParticles_ = new DeathParticles;
+		deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
+		deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
 	}
-
-	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 	switch (phase_) {
 	case Phase::kPlay:
