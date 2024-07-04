@@ -18,7 +18,7 @@ private:
 	static inline const float kDuration = 1.5f;
 	static inline const float kSpeed = 0.05f;	// particle speed
 	// angle per nums of particle
-	static inline const float kAngleUnit = (2 * std::numbers::pi_v<float> / kNumParticles); 
+	static inline const float kAngleUnit = (2 * std::numbers::pi_v<float>) / kNumParticles; 
 
 	bool isFinished_ = false;
 	float timer_ = 1.0f / 60.0f;

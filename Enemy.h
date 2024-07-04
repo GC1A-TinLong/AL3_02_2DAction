@@ -35,8 +35,8 @@ private:
 	// Walking speed
 	static inline const float kWalkSpeed = 0.05f;
 	static inline const float kInitialWalkMotionAngle = -60.0f; // Initial angle
-	static inline const float kFinalWalkMotionAngle = 120.0f;        // Final angle
-	static inline const float kWalkMotionTime = 1.0f;                      // Animation loop time
+	static inline const float kFinalWalkMotionAngle = 120.0f;   // Final angle
+	static inline const float kWalkMotionTime = 1.0f;           // Animation loop time
 	float walkTimer_ = 0.0f;
 	// Velocity
 	Vector3 velocity_ = {};

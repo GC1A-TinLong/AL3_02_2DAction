@@ -9,8 +9,10 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete modelSkydome_;
 	delete modelBlock_;
-	delete playerModel_;
-	delete player_;
+	if (player_) {
+		delete playerModel_;
+		delete player_;
+	}
 	if (deathParticles_) {
 		delete deathParticles_;
 		delete deathParticlesModel_;
@@ -68,7 +70,7 @@ void GameScene::Initialize() {
 	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
 	// Death Particles
-	// deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
+	//deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
 	// Enemy
 	enemy_ = new Enemy;
 	enemyModel_ = Model::CreateFromOBJ("enemy", true);
@@ -131,7 +133,7 @@ void GameScene::Draw() {
 
 	skydome_->Draw();
 
-	if (player_) {
+	if (player_->IsDead() == false) {
 		player_->Draw();
 	}
 	if (deathParticles_) {
@@ -224,14 +226,6 @@ void GameScene::CheckAllCollisions() {
 }
 
 void GameScene::ChangePhase() {
-	if (player_->IsDead()) {
-		phase_ = Phase::kDeath;
-		const Vector3& deathParticlesPosition = player_->GetWorldPosition();
-		// initialize particle effect at player position
-		deathParticles_ = new DeathParticles;
-		deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
-		deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
-	}
 
 	switch (phase_) {
 	case Phase::kPlay:
@@ -255,6 +249,16 @@ void GameScene::ChangePhase() {
 			}
 		}
 		CheckAllCollisions(); // checking all collision
+
+		if (player_->IsDead()) {
+			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
+			// initialize particle effect at player position
+			deathParticles_ = new DeathParticles;
+			deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
+			deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
+
+			phase_ = Phase::kDeath;
+		}
 
 		break;
 
