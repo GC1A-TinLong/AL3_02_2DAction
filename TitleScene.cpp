@@ -8,19 +8,42 @@ void TitleScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {0.0f, 10.0f, 0.0f};
+	worldTransform_.translation_ = position_;
 	viewProjection_.Initialize();
 	model_ = Model::CreateFromOBJ("title", true);
 }
 
 void TitleScene::Update() {
-	//easeOut[0].pos.x = easeOut[0].start.x + (easeOut[0].end.x - easeOut[0].start.x) * EaseOut(t);
-	t += 1.0f / kEndFrame;
+	if (!startBuffer) {
+		t += 1.0f / kEndFrame;
+	}
+	if (t >= 1.0f && !startBuffer) {
+		startBuffer = true;
+	}
+	if (startBuffer) {
+		buffer++;
+		if (buffer >= bufferEnd) {
+			t = 0.0f;
+			buffer = 0;
+			startBuffer = false;
+			float tempPos = startPos;
+			startPos = endPos;
+			endPos = tempPos;
+		}
+	}
+
+	worldTransform_.translation_.y = startPos + (endPos - startPos) * Easing();
 
 	worldTransform_.UpdateMatrix();
+
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		isFinished_ = true;
+	}
+
 #ifdef _DEBUG
 	ImGui::Begin("window");
 	ImGui::DragFloat3("worldTransform_", &worldTransform_.translation_.x, 0.1f);
+	ImGui::DragFloat("t", &t, 0.1f);
 	ImGui::End();
 #endif // _DEBUG
 }
@@ -37,4 +60,5 @@ void TitleScene::Draw() {
 #pragma endregion
 }
 
-float TitleScene::EaseOut() { return sin((t * std::numbers::pi_v<float>) / 2.0f); }
+//float TitleScene::Easing() const { return t < 0.5f ? 16.0f * t * t * t * t * t : 1 - pow(-2.0f * t + 2.0f, 5.0f) / 2.0f; }
+float TitleScene::Easing() const { return -(cos(std::numbers::pi_v<float> * t) - 1.0f) / 2.0f; }

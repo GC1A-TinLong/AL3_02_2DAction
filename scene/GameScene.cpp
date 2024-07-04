@@ -133,7 +133,8 @@ void GameScene::Draw() {
 
 	skydome_->Draw();
 
-	if (player_->IsDead() == false) {
+	//if (player_->IsDead() == false) {
+	if (player_) {
 		player_->Draw();
 	}
 	if (deathParticles_) {
@@ -257,6 +258,13 @@ void GameScene::ChangePhase() {
 			deathParticlesModel_ = Model::CreateFromOBJ("deathParticles", true);
 			deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, deathParticlesPosition);
 
+			if (player_) {
+				delete playerModel_;
+				playerModel_ = nullptr;
+				delete player_;
+				player_ = nullptr;
+			}
+
 			phase_ = Phase::kDeath;
 		}
 
@@ -283,6 +291,10 @@ void GameScene::ChangePhase() {
 				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
 				worldTransformBlock->TransferMatrix();
 			}
+		}
+
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			isFinished_ = true;
 		}
 
 		break;

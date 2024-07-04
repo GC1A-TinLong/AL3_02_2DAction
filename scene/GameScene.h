@@ -59,6 +59,7 @@ public: // メンバ関数
 	void ChangePhase();
 
 	// Getter
+	bool IsFinished() const { return isFinished_; }
 
 private: // メンバ変数
 	enum class Phase {
@@ -73,6 +74,8 @@ private: // メンバ変数
 
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
+
+	bool isFinished_ = false;
 
 #ifdef _DEBUG
 	// Debug Camera
