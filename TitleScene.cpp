@@ -1,6 +1,6 @@
 #include "TitleScene.h"
 
-TitleScene::TitleScene() {}
+TitleScene::TitleScene() { delete fade_; }
 
 TitleScene::~TitleScene() {}
 
@@ -11,6 +11,10 @@ void TitleScene::Initialize() {
 	worldTransform_.translation_ = position_;
 	viewProjection_.Initialize();
 	model_ = Model::CreateFromOBJ("title", true);
+
+	fade_ = new Fade;
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, kFadeDuration);
 }
 
 void TitleScene::Update() {
@@ -31,8 +35,12 @@ void TitleScene::Update() {
 			endPos = tempPos;
 		}
 	}
-
 	worldTransform_.translation_.y = startPos + (endPos - startPos) * Easing();
+
+	fade_->Update();
+	if (fade_->IsFinished()) {
+		fade_->Stop();
+	}
 
 	worldTransform_.UpdateMatrix();
 
@@ -54,7 +62,11 @@ void TitleScene::Draw() {
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
+
 	model_->Draw(worldTransform_, viewProjection_);
+
+	fade_->Draw();
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

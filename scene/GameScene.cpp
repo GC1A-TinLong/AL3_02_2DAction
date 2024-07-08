@@ -5,6 +5,9 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
+	if (fade_) {
+		delete fade_;
+	}
 	delete mapChipField_;
 	delete skydome_;
 	delete modelSkydome_;
@@ -70,7 +73,7 @@ void GameScene::Initialize() {
 	player_->Initialize(playerModel_, &viewProjection_, playerPosition, playerMovableArea);
 	player_->SetMapChipField(mapChipField_);
 	// Death Particles
-	//deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
+	// deathParticles_->Initialize(deathParticlesModel_, &viewProjection_, playerPosition);
 	// Enemy
 	enemy_ = new Enemy;
 	enemyModel_ = Model::CreateFromOBJ("enemy", true);
@@ -133,7 +136,6 @@ void GameScene::Draw() {
 
 	skydome_->Draw();
 
-	//if (player_->IsDead() == false) {
 	if (player_) {
 		player_->Draw();
 	}
@@ -154,6 +156,10 @@ void GameScene::Draw() {
 			}
 			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
+	}
+
+	if (fade_) {
+		fade_->Draw();
 	}
 
 	/// <summary>
@@ -294,9 +300,20 @@ void GameScene::ChangePhase() {
 		}
 
 		if (deathParticles_ && deathParticles_->IsFinished()) {
-			isFinished_ = true;
+			fade_ = new Fade;
+			fade_->Start(Fade::Status::FadeOut, kFadeDuration);
+			fade_->Initialize();
+			phase_ = Phase::kFadeOut;
 		}
 
+		break;
+
+	case Phase::kFadeOut:
+		fade_->Update();
+
+		if (fade_->IsFinished()) {
+			isFinished_ = true;
+		}
 		break;
 	}
 }

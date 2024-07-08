@@ -1,20 +1,21 @@
 #pragma once
 #include "Audio.h"
+#include "CameraController.h"
+#include "DeathParticles.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Enemy.h"
+#include "Fade.h"
 #include "Function.h"
 #include "Input.h"
+#include "MapChipField.h"
 #include "Model.h"
+#include "Player.h"
 #include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
-#include "Player.h"
-#include "MapChipField.h"
-#include "CameraController.h"
-#include "Enemy.h"
-#include "DeathParticles.h"
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -63,10 +64,14 @@ public: // メンバ関数
 
 private: // メンバ変数
 	enum class Phase {
+		kFadeIn,
 		kPlay,
 		kDeath,
+		kFadeOut,
 	};
-	Phase phase_;	// current phase
+	Phase phase_; // current phase
+	static inline const float kFadeDuration = 1.0f;
+	Fade* fade_ = nullptr;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -75,6 +80,7 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
+	// check if game scene is finished (for getter)
 	bool isFinished_ = false;
 
 #ifdef _DEBUG
@@ -83,7 +89,7 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 #endif // DEBUG
 
-	MapChipField* mapChipField_;
+	MapChipField* mapChipField_ = nullptr;
 
 	// Block model
 	Model* modelBlock_ = nullptr;
@@ -101,7 +107,7 @@ private: // メンバ変数
 	bool isPlayerHit = false;
 
 	// Death Particles
-	DeathParticles* deathParticles_ = nullptr;	
+	DeathParticles* deathParticles_ = nullptr;
 	Model* deathParticlesModel_ = nullptr;
 
 	// Enemy

@@ -8,10 +8,17 @@
 #include <numbers>
 #include <cmath>
 #include <Input.h>
+#include "Fade.h"
 
 class TitleScene 
 {
 public:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
+
 	TitleScene();
 	~TitleScene();
 
@@ -29,6 +36,10 @@ private:
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 	Model* model_ = nullptr;
+
+	Fade* fade_ = nullptr;
+	static inline const float kFadeDuration = 1.0f;
+	Phase phase_ = Phase::kFadeIn;
 
 	static inline const float kEndFrame = 45.0f;
 
