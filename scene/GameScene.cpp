@@ -53,7 +53,10 @@ void GameScene::Initialize() {
 #endif _DEBUG
 
 	// Game Phase
-	phase_ = Phase::kPlay;
+	phase_ = Phase::kFadeIn;
+	fade_ = new Fade;
+	fade_->Start(Fade::Status::FadeIn, kFadeDuration);
+	fade_->Initialize();
 
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipVsc("Resources/blocks.csv");
@@ -94,7 +97,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
-	ChangePhase();
+	CurrentPhase();
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_F)) {
@@ -158,10 +161,6 @@ void GameScene::Draw() {
 		}
 	}
 
-	if (fade_) {
-		fade_->Draw();
-	}
-
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
@@ -177,6 +176,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	if (fade_) {
+		fade_->Draw();
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -232,9 +235,30 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 }
 
-void GameScene::ChangePhase() {
+void GameScene::CurrentPhase() {
 
 	switch (phase_) {
+	case Phase::kFadeIn:
+		skydome_->Update(); // skydome update
+		cameraController_->Update();
+		// block update
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock) {
+					continue;
+				}
+				worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
+				worldTransformBlock->TransferMatrix();
+			}
+		}
+
+		fade_->Update();
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kPlay;
+		}
+
+		break;
+
 	case Phase::kPlay:
 		skydome_->Update(); // skydome update
 		player_->Update();  // player update
@@ -300,9 +324,9 @@ void GameScene::ChangePhase() {
 		}
 
 		if (deathParticles_ && deathParticles_->IsFinished()) {
-			fade_ = new Fade;
 			fade_->Start(Fade::Status::FadeOut, kFadeDuration);
 			fade_->Initialize();
+
 			phase_ = Phase::kFadeOut;
 		}
 

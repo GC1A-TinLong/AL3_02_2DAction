@@ -24,7 +24,6 @@ static void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		if (titleScene->IsFinished()) {
-			scene = Scene::kGame;
 
 			delete titleScene;
 			titleScene = nullptr;
@@ -32,12 +31,13 @@ static void ChangeScene() {
 			// ゲームシーンの初期化
 			gameScene = new GameScene();
 			gameScene->Initialize();
+
+			scene = Scene::kGame;
 		}
 		break;
 
 	case Scene::kGame:
 		if (gameScene->IsFinished()) {
-			scene = Scene::kTitle;
 
 			delete gameScene;
 			gameScene = nullptr;
@@ -45,6 +45,8 @@ static void ChangeScene() {
 			// タイトルシーンの初期化
 			titleScene = new TitleScene();
 			titleScene->Initialize();
+
+			scene = Scene::kTitle;
 		}
 		break;
 	}

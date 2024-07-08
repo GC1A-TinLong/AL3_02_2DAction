@@ -52,4 +52,5 @@ private:
 	static inline const Vector3 position_ = {0, 10.0f, 0};
 	
 	bool isFinished_ = false;
+	bool startChange = false;
 };

@@ -39,14 +39,7 @@ void Fade::Draw() {
 	if (status_ == Status::None) {
 		return;
 	}
-
-	// コマンドリストの取得
-	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
-	Sprite::PreDraw(commandList);
 	sprite_->Draw();
-	Sprite::PostDraw();
-
-	dxCommon_->ClearDepthBuffer();
 }
 
 void Fade::Start(Status status, float duration) {

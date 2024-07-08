@@ -37,16 +37,18 @@ void TitleScene::Update() {
 	}
 	worldTransform_.translation_.y = startPos + (endPos - startPos) * Easing();
 
-	fade_->Update();
-	if (fade_->IsFinished()) {
-		fade_->Stop();
-	}
-
 	worldTransform_.UpdateMatrix();
 
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		fade_->Start(Fade::Status::FadeOut, kFadeDuration);
+		fade_->Initialize();
+		startChange = true;
+	}
+	if (fade_->IsFinished() && startChange) {
 		isFinished_ = true;
 	}
+
+	fade_->Update();
 
 #ifdef _DEBUG
 	ImGui::Begin("window");
@@ -65,10 +67,21 @@ void TitleScene::Draw() {
 
 	model_->Draw(worldTransform_, viewProjection_);
 
-	fade_->Draw();
-
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(commandList);
+
+	if (fade_) {
+		fade_->Draw();
+	}
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+
 #pragma endregion
 }
 

@@ -57,7 +57,7 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
-	void ChangePhase();
+	void CurrentPhase();
 
 	// Getter
 	bool IsFinished() const { return isFinished_; }
