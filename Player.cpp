@@ -190,9 +190,6 @@ void Player::WhenHitWall(const CollisionMapInfo& info) {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	if (deathParticles_) {
-		deathParticles_->Update();
-	}
 	isDead_ = true;
 }
 
